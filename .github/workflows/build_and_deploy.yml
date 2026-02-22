@@ -1,0 +1,49 @@
+name: Build and Deploy Flutter Web to Firebase
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.5'
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run code generation
+        run: dart run build_runner build
+
+      - name: Generate localizations
+        run: flutter gen-l10n
+
+      - name: Build Flutter web
+        run: flutter build web --release --base-href /
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Save firebase key
+        run: |
+          cat <<EOF > firebase_service_key.json
+          ${{ secrets.FIREBASE_KEY_JSON }}
+          EOF
+
+      - name: Save firebase key and set credentials path
+        run: |
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$PWD/firebase_service_key.json" >> $GITHUB_ENV
+
+      - name: Deploy to Firebase
+        run: firebase deploy
