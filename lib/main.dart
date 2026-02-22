@@ -1,4 +1,4 @@
-import 'package:amateur_arena/firebase_options.dart';
+import 'package:amateur_arena/firebase_options_template.dart';
 import 'package:amateur_arena/l10n/app_localizations.dart';
 import 'package:amateur_arena/models/user.dart';
 import 'package:amateur_arena/screens/authentication/login.dart';
@@ -9,10 +9,20 @@ import 'package:amateur_arena/screens/marketplace.dart';
 import 'package:amateur_arena/services/auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
+  try {
+    await dotenv.load(fileName: ".env");
+    debugPrint("Loading .env file.");
+  } catch (e) {
+    debugPrint(
+      "Unable to find .env file. Continuing without loading the env file.",
+    );
+  }
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MyApp());
@@ -184,53 +194,3 @@ class MyAppState extends State<MyApp> {
     );
   }
 }
-
-// import 'package:amateur_arena/firebase_options.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:flutter/material.dart';
-//
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-//   runApp(MyApp());
-// }
-//
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final db = FirebaseFirestore.instance;
-//     return MaterialApp(
-//       theme: ThemeData(
-//         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-//       ),
-//       home: Scaffold(
-//         body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-//           stream: db.collection('events').snapshots(),
-//           builder: (context, snapshot) {
-//             debugPrint("Snapshot State: ${snapshot.connectionState}");
-//             if (snapshot.hasError) {
-//               debugPrint("Snapshot Error: ${snapshot.error}");
-//               return Center(child: Text("Error: ${snapshot.error}"));
-//             }
-//             if (snapshot.connectionState == ConnectionState.waiting) {
-//               return const Center(child: CircularProgressIndicator());
-//             }
-//
-//             final docs = snapshot.data!.docs;
-//             return ListView.builder(
-//               itemCount: docs.length,
-//               itemBuilder: (context, index) {
-//                 return ListTile(
-//                   title: Text(docs[index].data().toString()),
-//                 );
-//               },
-//             );
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }
