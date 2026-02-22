@@ -1,4 +1,5 @@
 import 'package:amateur_arena/firebase_options.dart';
+import 'package:amateur_arena/l10n/app_localizations.dart';
 import 'package:amateur_arena/models/user.dart';
 import 'package:amateur_arena/screens/authentication/login.dart';
 import 'package:amateur_arena/screens/authentication/register.dart';
@@ -17,8 +18,24 @@ void main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  MyApp({super.key});
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => MyAppState();
+
+  static MyAppState of(BuildContext context) =>
+      context.findAncestorStateOfType<MyAppState>()!;
+}
+
+class MyAppState extends State<MyApp> {
+  Locale _locale = const Locale("en");
+
+  void setLocale(Locale value) {
+    setState(() {
+      _locale = value;
+    });
+  }
 
   final goRouter = GoRouter(
     routes: [
@@ -34,6 +51,7 @@ class MyApp extends StatelessWidget {
                   children: [
                     Row(
                       children: [
+                        Image.network("favicon.png", width: 32, height: 32),
                         Text(
                           "Curling Companion",
                           style: TextStyle(fontSize: 30),
@@ -44,11 +62,15 @@ class MyApp extends StatelessWidget {
                             children: [
                               TextButton(
                                 onPressed: () => context.go("/login"),
-                                child: Text("Login"),
+                                child: Text(
+                                  AppLocalizations.of(context)!.login,
+                                ),
                               ),
                               TextButton(
                                 onPressed: () => context.go("/register"),
-                                child: Text("Register"),
+                                child: Text(
+                                  AppLocalizations.of(context)!.register,
+                                ),
                               ),
                             ],
                           )
@@ -58,6 +80,26 @@ class MyApp extends StatelessWidget {
                                 await AuthService().signOut(),
                             child: Text("Logout"),
                           ),
+                        DropdownButton<Locale>(
+                          value: MyApp.of(context)._locale,
+                          icon: const Icon(Icons.language, size: 20),
+                          onChanged: (Locale? newLocale) {
+                            if (newLocale != null) {
+                              MyApp.of(context).setLocale(newLocale);
+                            }
+                          },
+                          items: const [
+                            DropdownMenuItem(
+                              value: Locale("en"),
+                              child: Text("EN"),
+                            ),
+                            DropdownMenuItem(
+                              value: Locale("de"),
+                              child: Text("DE"),
+                            ),
+                          ],
+                          underline: const SizedBox(),
+                        ),
                       ],
                     ),
                     Divider(color: Colors.black),
@@ -65,15 +107,17 @@ class MyApp extends StatelessWidget {
                       children: [
                         ElevatedButton(
                           onPressed: () => context.go("/"),
-                          child: Text("Home"),
+                          child: Text(AppLocalizations.of(context)!.home),
                         ),
                         ElevatedButton(
                           onPressed: () => context.go("/events"),
-                          child: Text("Events"),
+                          child: Text(AppLocalizations.of(context)!.events),
                         ),
                         ElevatedButton(
                           onPressed: () => context.go("/marketplace"),
-                          child: Text("Marketplace"),
+                          child: Text(
+                            AppLocalizations.of(context)!.marketplace,
+                          ),
                         ),
                       ],
                     ),
@@ -133,6 +177,9 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         ),
+        locale: _locale,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
       ),
     );
   }
