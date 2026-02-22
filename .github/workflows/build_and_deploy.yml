@@ -39,11 +39,9 @@ jobs:
           cat <<EOF > firebase.json
           ${{ secrets.FIREBASE_KEY_JSON }}
           EOF
-          echo "GOOGLE_APPLICATION_CREDENTIALS=$PWD/firebase.json" >> $GITHUB_ENV
 
       - name: Save firebase key and set credentials path
         run: |
-          echo "${{ secrets.FIREBASE_KEY_JSON }}" > firebase.json
           echo "GOOGLE_APPLICATION_CREDENTIALS=$PWD/firebase.json" >> $GITHUB_ENV
 
       - name: Deploy to Firebase
