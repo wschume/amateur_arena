@@ -45,4 +45,4 @@ jobs:
           echo "GOOGLE_APPLICATION_CREDENTIALS=$PWD/firebase.json" >> $GITHUB_ENV
 
       - name: Deploy to Firebase
-        run: firebase deploy
+        run: firebase deploy --only hosting
