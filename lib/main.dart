@@ -15,7 +15,7 @@ import 'package:provider/provider.dart';
 
 void main() async {
   try {
-    await dotenv.load(fileName: ".env");
+    await dotenv.load(fileName: "assets/.env");
     debugPrint("Loading .env file.");
   } catch (e) {
     debugPrint(
