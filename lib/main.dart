@@ -15,14 +15,18 @@ import 'package:provider/provider.dart';
 
 void main() async {
   try {
-    await dotenv.load(fileName: ".env");
-    debugPrint("Loading .env file.");
+    await dotenv.load(fileName: "assets/.env");
+    debugPrint(
+      "Loading .env file. ${dotenv.env['FIREBASE_API_KEY']!.substring(0, 5)}",
+    );
   } catch (e) {
     debugPrint(
       "Unable to find .env file. Continuing without loading the env file.",
     );
   }
-
+  debugPrint(
+    "key2: ${DefaultFirebaseOptions.currentPlatform.apiKey.substring(0, 5)}",
+  );
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MyApp());
@@ -177,6 +181,9 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(
+      "key: ${DefaultFirebaseOptions.currentPlatform.apiKey.substring(0, 5)}",
+    );
     return StreamProvider<AmateurArenaUser?>.value(
       initialData: null,
       value: AuthService().user,
