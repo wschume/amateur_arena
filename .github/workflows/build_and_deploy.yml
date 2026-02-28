@@ -41,6 +41,8 @@ jobs:
           cat <<EOF > assets/.env
           ${{ secrets.FIREBASE_KEY_ENV }}
           EOF
+          
+          ls -a assets
 
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
